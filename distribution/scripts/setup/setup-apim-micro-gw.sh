@@ -45,13 +45,13 @@ export -f usageCommand
 
 function usageHelp() {
     echo "-j: Oracle JDK distribution."
-    echo "-a: WSO2 API Manager distribution."
+    # echo "-a: WSO2 API Manager distribution."
     echo "-k: WSO2 API Microgateway distribution."
-    echo "-c: MySQL Connector JAR file."
+    # echo "-c: MySQL Connector JAR file."
     echo "-n: The hostname of Netty service."
-    echo "-m: The hostname of MySQL service."
-    echo "-u: MySQL Username."
-    echo "-p: MySQL Password."
+    # echo "-m: The hostname of MySQL service."
+    # echo "-u: MySQL Username."
+    # echo "-p: MySQL Password."
     echo "-b: General user of the OS."
 }
 export -f usageHelp
@@ -61,27 +61,27 @@ while getopts "gp:w:o:hj:a:k:c:n:m:u:p:b:" opt; do
     j)
         oracle_jdk_dist=${OPTARG}
         ;;
-    a)
-        apim_product=${OPTARG}
-        ;;
+    # a)
+    #     apim_product=${OPTARG}
+    #     ;;
     k)
         micro_gw_product=${OPTARG}
         ;;
-    c)
-        mysql_connector_file=${OPTARG}
-        ;;
+    # c)
+    #     mysql_connector_file=${OPTARG}
+    #     ;;
     n)
         netty_host=${OPTARG}
         ;;
-    m)
-        mysql_host=${OPTARG}
-        ;;
-    u)
-        mysql_user=${OPTARG}
-        ;;
-    p)
-        mysql_password=${OPTARG}
-        ;;
+    # m)
+    #     mysql_host=${OPTARG}
+    #     ;;
+    # u)
+    #     mysql_user=${OPTARG}
+    #     ;;
+    # p)
+    #     mysql_password=${OPTARG}
+    #     ;;
     b)
         os_user=${OPTARG}
         ;;
@@ -98,34 +98,34 @@ function validate() {
         echo "Please download Oracle JDK."
         exit 1
     fi
-    if [[ -z $apim_product ]]; then
-        echo "Please provide the WSO2 API Manager Distribution."
-        exit 1
-    fi
+    # if [[ -z $apim_product ]]; then
+    #     echo "Please provide the WSO2 API Manager Distribution."
+    #     exit 1
+    # fi
     if [[ -z $micro_gw_product ]]; then
         echo "Please provide the API Microgateway Distribution."
         exit 1
     fi
-    if [[ ! -f $mysql_connector_file ]]; then
-        echo "Please provide the MySQL connector file."
-        exit 1
-    fi
+    # if [[ ! -f $mysql_connector_file ]]; then
+    #     echo "Please provide the MySQL connector file."
+    #     exit 1
+    # fi
     if [[ -z $netty_host ]]; then
         echo "Please provide the hostname of Netty Service."
         exit 1
     fi
-    if [[ -z $mysql_host ]]; then
-        echo "Please provide the hostname of MySQL host."
-        exit 1
-    fi
-    if [[ -z $mysql_user ]]; then
-        echo "Please provide the MySQL username."
-        exit 1
-    fi
-    if [[ -z $mysql_password ]]; then
-        echo "Please provide the MySQL password."
-        exit 1
-    fi
+    # if [[ -z $mysql_host ]]; then
+    #     echo "Please provide the hostname of MySQL host."
+    #     exit 1
+    # fi
+    # if [[ -z $mysql_user ]]; then
+    #     echo "Please provide the MySQL username."
+    #     exit 1
+    # fi
+    # if [[ -z $mysql_password ]]; then
+    #     echo "Please provide the MySQL password."
+    #     exit 1
+    # fi
     if [[ -z $os_user ]]; then
         echo "Please provide the username of the general os user"
         exit 1
@@ -146,20 +146,20 @@ function setup() {
     fi
 
     #Extract the downloaded zip
-    echo "Extracting WSO2 API Manager"
-    apim_dirname=$(unzip -Z -1 $apim_product | head -1 | sed -e 's@/.*@@')
-    sudo -u $os_user unzip -q -o $apim_product
-    sudo -u $os_user mv -v $apim_dirname wso2am
-    echo "API Manager is extracted"
+    # echo "Extracting WSO2 API Manager"
+    # apim_dirname=$(unzip -Z -1 $apim_product | head -1 | sed -e 's@/.*@@')
+    # sudo -u $os_user unzip -q -o $apim_product
+    # sudo -u $os_user mv -v $apim_dirname wso2am
+    # echo "API Manager is extracted"
 
     # Configure WSO2 API Manager
-    sudo -u $os_user $script_dir/../apim/configure.sh -m $mysql_host -u $mysql_user -p $mysql_password -c $mysql_connector_file
+    # sudo -u $os_user $script_dir/../apim/configure.sh -m $mysql_host -u $mysql_user -p $mysql_password -c $mysql_connector_file
 
     # Start API Manager
-    sudo -u $os_user $script_dir/../apim/apim-start.sh -m 1G
+    # sudo -u $os_user $script_dir/../apim/apim-start.sh -m 1G
 
     # Create APIs in Local API Manager
-    sudo -u $os_user $script_dir/../apim/create-api.sh -a localhost -n "echo" -d "Echo API" -b "http://${netty_host}:8688/"
+    # sudo -u $os_user $script_dir/../apim/create-api.sh -a localhost -n "echo" -d "Echo API" -b "http://${netty_host}:8688/"
 
     #Extract the Micro-gw zip
     echo "Extracting WSO2 API Manager Micro Gateway"
@@ -192,21 +192,21 @@ function setup() {
     sudo -u $os_user ./apim/micro-gw/generate-jwt-tokens.sh -t 1000
 
     # Generate oauth2 access tokens
-    tokens_sql="$script_dir/../apim/target/tokens.sql"
-    if [[ ! -f $tokens_sql ]]; then
-        sudo -u $os_user $script_dir/../apim/generate-tokens.sh -t 4000
-    fi
+    # tokens_sql="$script_dir/../apim/target/tokens.sql"
+    # if [[ ! -f $tokens_sql ]]; then
+    #     sudo -u $os_user $script_dir/../apim/generate-tokens.sh -t 4000
+    # fi
 
-    if [[ -f $tokens_sql ]]; then
-        mysql -h $mysql_host -u $mysql_user -p$mysql_password apim <$tokens_sql
-    else
-        echo "SQL file with generated tokens not found."
-        exit 1
-    fi
+    # if [[ -f $tokens_sql ]]; then
+    #     mysql -h $mysql_host -u $mysql_user -p$mysql_password apim <$tokens_sql
+    # else
+    #     echo "SQL file with generated tokens not found."
+    #     exit 1
+    # fi
 
     popd
     echo "Completed API Micro-Gateway setup..."
 }
 export -f setup
 
-$script_dir/setup-common.sh "${opts[@]}" "$@" -p curl -p jq -p unzip -p expect -p mysql-client
+$script_dir/setup-common.sh "${opts[@]}" "$@" -p curl -p jq -p unzip -p expect

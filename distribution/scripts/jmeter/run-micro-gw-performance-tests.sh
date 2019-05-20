@@ -39,20 +39,20 @@ function initialize() {
 }
 export -f initialize
 
-declare -A test_scenario0=(
-    [name]="microgw-passthrough-oauth2"
-    [display_name]="Microgateway-Passthrough-OAuth2"
-    [description]="A secured API, which directly invokes the backend through Microgateway using OAuth2 tokens"
-    [jmx]="apim-test.jmx"
-    [protocol]="https"
-    [path]="/echo/1.0.0"
-    [port]="9095"
-    [use_backend]=true
-    [tokens]="$HOME/tokens.csv"
-    [skip]=false
-)
+# declare -A test_scenario0=(
+#     [name]="microgw-passthrough-oauth2"
+#     [display_name]="Microgateway-Passthrough-OAuth2"
+#     [description]="A secured API, which directly invokes the backend through Microgateway using OAuth2 tokens"
+#     [jmx]="apim-test.jmx"
+#     [protocol]="https"
+#     [path]="/echo/1.0.0"
+#     [port]="9095"
+#     [use_backend]=true
+#     [tokens]="$HOME/tokens.csv"
+#     [skip]=false
+# )
 
-declare -A test_scenario1=(
+declare -A test_scenario0=(
     [name]="microgw-passthrough-jwt"
     [display_name]="Microgateway-Passthrough-JWT"
     [description]="A secured API, which directly invokes the backend through Microgateway using JWT tokens"

@@ -1,0 +1,16 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: echo
+x-mgw-basePath: /echo/1.0.0
+x-mgw-production-endpoints:
+        urls:
+          - http://www.mocky.io/v2/5cdc00d52d0000dc49f5a4e9
+paths:
+  /:
+    post:
+      summary: echos the request
+      operationId: echoRequest
+      responses:
+        '200':
+          description: Expected response to a valid request

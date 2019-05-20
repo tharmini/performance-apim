@@ -22,6 +22,9 @@ default_label="echo-mgw"
 label="$default_label"
 default_heap_size="512m"
 heap_size="$default_heap_size"
+micro_gw_version="3.0.0-beta2"
+default_cpus="1"
+cpus="$default_cpus"
 
 function usage() {
     echo ""
@@ -30,6 +33,7 @@ function usage() {
     echo "-m: The heap memory size of API Microgateway. Default: $default_heap_size."
     echo "-n: The identifier for the built Microgateway distribution. Default: $default_label."
     echo "-h: Display this help and exit."
+    echo "-c: number of CPUs"
     echo ""
 }
 
@@ -41,6 +45,9 @@ while getopts "m:n:h" opt; do
     n)
         label=${OPTARG}
         ;;
+    c) 
+        cpus=${OPTARG}
+        ;;    
     h)
         usage
         exit 0
@@ -63,14 +70,7 @@ if [[ -z $label ]]; then
     exit 1
 fi
 
-if [ -e "/home/ubuntu/micro-gw-${label}/bin/gateway.pid" ]; then
-    PID=$(cat "/home/ubuntu/micro-gw-${label}/bin/gateway.pid")
-fi
-
-if pgrep -f ballerina >/dev/null; then
-    echo "Shutting down microgateway"
-    pgrep -f ballerina | xargs kill -9
-fi
+docker kill $(docker ps -q --filter "IMAGE=wso2/wso2micro-gw:${micro_gw_version}")
 
 echo "Waiting for microgateway to stop"
 while true; do
@@ -91,7 +91,7 @@ fi
 
 echo "Enabling GC Logs"
 export JAVA_OPTS="-XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:/home/ubuntu/micro-gw-${label}/logs/gc.log"
-JAVA_OPTS+=" -Xms${heap_size} -Xmx${heap_size}"
+JVM_MEM_OPTS=" -Xms${heap_size} -Xmx${heap_size}"
 JAVA_OPTS+=" -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof""
 
 jvm_dir=""
@@ -101,7 +101,14 @@ done
 export JAVA_HOME="${jvm_dir}"
 
 echo "Starting Microgateway"
-pushd /home/ubuntu/micro-gw-${label}/bin/
+pushd /home/ubuntu/micro-gw-${label}/target/
+echo "Starting the docker container:"
+(
+    set -x
+    docker run --name=micro-gw -d -p 9095:9095 -p 9090:9090 ${PWD}:/home/exec/ --cpus=${cpus}
+        --volume ${HOME}/logs/gc.log:/home/ubuntu/micro-gw-${label}/logs/gc.log \
+        -e "${JVM_MEM_OPTS}" -e "${JAVA_OPTS}" -e project=${label} wso2/wso2micro-gw:${micro_gw_version}
+)
 bash gateway >/dev/null &
 popd
 
