@@ -209,4 +209,5 @@ function setup() {
 }
 export -f setup
 
+$script_dir/install-docker.sh -u $os_user
 $script_dir/setup-common.sh "${opts[@]}" "$@" -p curl -p jq -p unzip -p expect
