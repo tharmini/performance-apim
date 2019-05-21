@@ -105,8 +105,9 @@ pushd /home/ubuntu/micro-gw-${label}/target/
 echo "Starting the docker container:"
 (
     set -x
-    docker run --name=micro-gw -d -p 9095:9095 -p 9090:9090 ${PWD}:/home/exec/ --cpus=${cpus}
+    docker run --name=micro-gw -d -p 9095:9095 -p 9090:9090 ${PWD}:/home/exec/ --cpus=${cpus} \
         --volume ${HOME}/logs/gc.log:/home/ubuntu/micro-gw-${label}/logs/gc.log \
+        --volume ${HOME}/heap-dump.hprof:/home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof
         -e "${JVM_MEM_OPTS}" -e "${JAVA_OPTS}" -e project=${label} wso2/wso2micro-gw:${micro_gw_version}
 )
 bash gateway >/dev/null &
