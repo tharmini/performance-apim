@@ -37,7 +37,7 @@ function usage() {
     echo ""
 }
 
-while getopts "m:n:h" opt; do
+while getopts "m:n:h:c" opt; do
     case "${opt}" in
     m)
         heap_size=${OPTARG}

@@ -39,7 +39,7 @@ export oracle_jdk_dist=""
 export os_user=""
 
 function usageCommand() {
-    echo "-j <oracle_jdk_dist> -a <apim_product> -k <micro_gw_product> -c <mysql_connector_file> -n <netty_host> -m <mysql_host> -u <mysql_username> -p <mysql_password> -b <os_user>"
+    echo "-j <oracle_jdk_dist> -k <micro_gw_product> -n <netty_host> -b <os_user>"
 }
 export -f usageCommand
 
@@ -56,7 +56,7 @@ function usageHelp() {
 }
 export -f usageHelp
 
-while getopts "gp:w:o:hj:a:k:c:n:m:u:p:b:" opt; do
+while getopts "gp:w:o:hj:k:n:b:" opt; do
     case "${opt}" in
     j)
         oracle_jdk_dist=${OPTARG}
@@ -178,7 +178,7 @@ function setup() {
     export PATH=$PATH:$PWD/micro-gw/bin
 
     # setup Micro-GW project
-    ./apim/micro-gw/create-micro-gw.sh
+    ./apim/micro-gw/create-micro-gw.sh "http://${netty_host}:8688/"
 
     #build Micro-GW
     micro-gw build echo-mgw

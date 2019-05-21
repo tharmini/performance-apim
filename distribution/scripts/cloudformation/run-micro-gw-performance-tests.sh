@@ -34,7 +34,7 @@ export metrics_file_prefix="microgateway"
 export run_performance_tests_script_name="run-micro-gw-performance-tests.sh"
 
 function usageCommand() {
-    echo "-a <wso2am_distribution> -m <wso2am_micro_gw_distribution> -c <mysql_connector_jar> -A <wso2am_ec2_instance_type> -D <wso2am_rds_db_instance_class>"
+    echo "-m <wso2am_micro_gw_distribution> -A <wso2am_ec2_instance_type>"
 }
 export -f usageCommand
 
@@ -47,7 +47,7 @@ function usageHelp() {
 }
 export -f usageHelp
 
-while getopts ":f:d:k:n:j:o:g:s:b:r:J:S:N:t:p:w:ha:m:c:A:D:" opt; do
+while getopts "f:d:k:n:j:o:g:s:b:r:J:S:N:t:p:w:ha:m:c:A:" opt; do
     case "${opt}" in
     # a)
     #     wso2am_distribution=${OPTARG}
