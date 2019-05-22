@@ -22,7 +22,7 @@ default_label="echo-mgw"
 label="$default_label"
 default_heap_size="512m"
 heap_size="$default_heap_size"
-micro_gw_version="3.0.0-beta2"
+micro_gw_version="3.0.0"
 default_cpus="1"
 cpus="$default_cpus"
 
@@ -70,7 +70,7 @@ if [[ -z $label ]]; then
     exit 1
 fi
 
-docker kill $(docker ps -q --filter "IMAGE=wso2/wso2micro-gw:${micro_gw_version}")
+docker kill $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}')
 
 echo "Waiting for microgateway to stop"
 while true; do
@@ -90,29 +90,20 @@ if [ ${#log_files[@]} -gt 1 ]; then
 fi
 
 echo "Enabling GC Logs"
-export JAVA_OPTS="-XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:/home/ubuntu/micro-gw-${label}/logs/gc.log"
-JVM_MEM_OPTS=" -Xms${heap_size} -Xmx${heap_size}"
-JAVA_OPTS+=" -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof""
-
-jvm_dir=""
-for dir in /usr/lib/jvm/jdk1.8*; do
-    [ -d "${dir}" ] && jvm_dir="${dir}" && break
-done
-export JAVA_HOME="${jvm_dir}"
+JVM_MEM_OPTS="JVM_MEM_OPTS=-Xms${heap_size} -Xmx${heap_size}"
+JAVA_OPTS="JAVA_OPTS=-XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:${HOME}/logs/gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="${HOME}/heap-dump.hprof""
 
 echo "Starting Microgateway"
 pushd /home/ubuntu/micro-gw-${label}/target/
 echo "Starting the docker container:"
 (
     set -x
-    docker run --name=micro-gw -d -p 9095:9095 -p 9090:9090 ${PWD}:/home/exec/ --cpus=${cpus} \
+    docker run -d -v ${PWD}:/home/exec/ -p 9095:9095 -p 9090:9090 -e project=${label} --name="microgw" --cpus=${cpus} wso2/wso2micro-gw:${micro_gw_version} \
         --volume ${HOME}/logs/gc.log:/home/ubuntu/micro-gw-${label}/logs/gc.log \
-        --volume ${HOME}/heap-dump.hprof:/home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof
-        -e "${JVM_MEM_OPTS}" -e "${JAVA_OPTS}" -e project=${label} wso2/wso2micro-gw:${micro_gw_version}
+        --volume ${HOME}/heap-dump.hprof:/home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof \
+        -e "${JVM_MEM_OPTS}" -e "${JAVA_OPTS}" 
 )
-bash gateway >/dev/null &
 popd
-
 echo "Waiting for Microgateway to start"
 
 n=0
