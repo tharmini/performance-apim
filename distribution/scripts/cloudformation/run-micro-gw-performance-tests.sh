@@ -47,11 +47,7 @@ function usageHelp() {
 }
 export -f usageHelp
 
-<<<<<<< HEAD
-while getopts "f:d:k:n:j:o:g:s:b:r:J:S:N:t:p:w:ha:m:c:A:" opt; do
-=======
 while getopts ":u:f:d:k:n:j:o:g:s:b:r:J:S:N:t:p:w:ha:m:c:A:D:" opt; do
->>>>>>> e02739ec7eb1e07f856ebfdfc1e1d5fff700316a
     case "${opt}" in
     # a)
     #     wso2am_distribution=${OPTARG}
