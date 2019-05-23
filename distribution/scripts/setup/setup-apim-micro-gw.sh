@@ -178,7 +178,7 @@ function setup() {
     export PATH=$PATH:$PWD/micro-gw/bin
 
     # setup Micro-GW project
-    $script_dir/../apim/micro-gw/create-micro-gw.sh "http://${netty_host}:8688/"
+    $script_dir/../apim/micro-gw/create-micro-gw.sh -n "http://${netty_host}:8688/"
 
     #build Micro-GW
     micro-gw build echo-mgw

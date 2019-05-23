@@ -1,4 +1,4 @@
-#!/usr/bin/expect
+#!/bin/bash
 # Copyright 2019 WSO2 Inc. (http://wso2.org)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,14 @@
 # ----------------------------------------------------------------------------
 # Setup WSO2 API Microgateway Project
 # ----------------------------------------------------------------------------
-netty_host=$1
+while getopts "n:" opt; do
+    case "${opt}" in
+    n)
+        netty_host=${OPTARG}
+        ;;
+    esac
+done
+
 if [[ -z $netty_host ]]; then
     echo "Please provide the netty host as first arugment for create-micro-gw.sh"
     exit 1
