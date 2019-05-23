@@ -178,7 +178,7 @@ function setup() {
     export PATH=$PATH:$PWD/micro-gw/bin
 
     # setup Micro-GW project
-    ./apim/micro-gw/create-micro-gw.sh "http://${netty_host}:8688/"
+    $script_dir/../apim/micro-gw/create-micro-gw.sh "http://${netty_host}:8688/"
 
     #build Micro-GW
     micro-gw build echo-mgw
@@ -186,10 +186,10 @@ function setup() {
     sudo -u $os_user unzip -q echo-mgw/target/micro-gw-echo-mgw.zip
 
     #start Micro-GW
-    sudo -u $os_user ./apim/micro-gw/micro-gw-start.sh -m 512m -n echo-mgw
+    sudo -u $os_user $script_dir/../apim/micro-gw/micro-gw-start.sh -m 512m -n echo-mgw
 
     #Generate jwt-tokens
-    sudo -u $os_user ./apim/micro-gw/generate-jwt-tokens.sh -t 1000
+    sudo -u $os_user $script_dir/../apim/micro-gw/generate-jwt-tokens.sh -t 1000
 
     # Generate oauth2 access tokens
     # tokens_sql="$script_dir/../apim/target/tokens.sql"
@@ -205,9 +205,9 @@ function setup() {
     # fi
 
     popd
+    $script_dir/../docker/install-docker.sh -u $os_user
     echo "Completed API Micro-Gateway setup..."
 }
 export -f setup
 
-$script_dir/install-docker.sh -u $os_user
 $script_dir/setup-common.sh "${opts[@]}" "$@" -p curl -p jq -p unzip -p expect

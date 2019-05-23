@@ -21,8 +21,7 @@ if [[ -z $netty_host ]]; then
     echo "Please provide the netty host as first arugment for create-micro-gw.sh"
     exit 1
 fi
-spawn micro-gw init echo-mgw
-expect eof
+micro-gw init echo-mgw
 cp echoBasicOpenAPI.yaml echo-mgw/api-definitions/echoBasicOpenAPI.yaml
 echo "openapi: "3.0.0"
 info:
@@ -31,7 +30,7 @@ info:
 x-mgw-basePath: /echo/1.0.0
 x-mgw-production-endpoints:
         urls:
-          - ${}
+          - ${netty_host}
 paths:
   /:
     post:
