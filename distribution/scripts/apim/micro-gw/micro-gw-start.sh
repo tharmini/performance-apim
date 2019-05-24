@@ -99,7 +99,7 @@ pushd /home/ubuntu/${label}/target/
 echo "Starting the docker container:"
 (
     set -x
-    docker run -d -v ${PWD}:/home/exec/ -p 9095:9095 -p 9090:9090 -e project=${label}.balx --name="microgw" --cpus=${cpus} wso2/wso2micro-gw:${micro_gw_version}
+    docker run -d -v ${PWD}:/home/exec/ -p 9095:9095 -p 9090:9090 -e project=${label} --name="microgw" --cpus=${cpus} wso2/wso2micro-gw:${micro_gw_version}
 )
 popd
 echo "Waiting for Microgateway to start"
