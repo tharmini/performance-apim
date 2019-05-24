@@ -177,13 +177,14 @@ function setup() {
     #Export the PATH of Micro-GW
     export PATH=$PATH:$PWD/micro-gw/bin
 
+    #install docker
+    $script_dir/../docker/install-docker.sh -u $os_user
+
     # setup Micro-GW project
     $script_dir/../apim/micro-gw/create-micro-gw.sh -n "http://${netty_host}:8688/"
 
     #build Micro-GW
     micro-gw build echo-mgw
-
-    sudo -u $os_user unzip -q echo-mgw/target/micro-gw-echo-mgw.zip
 
     #start Micro-GW
     sudo -u $os_user $script_dir/../apim/micro-gw/micro-gw-start.sh -m 512m -n echo-mgw
@@ -205,7 +206,6 @@ function setup() {
     # fi
 
     popd
-    $script_dir/../docker/install-docker.sh -u $os_user
     echo "Completed API Micro-Gateway setup..."
 }
 export -f setup

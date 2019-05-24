@@ -29,7 +29,6 @@ if [[ -z $netty_host ]]; then
     exit 1
 fi
 micro-gw init echo-mgw
-cp echoBasicOpenAPI.yaml echo-mgw/api-definitions/echoBasicOpenAPI.yaml
 echo "openapi: "3.0.0"
 info:
   version: 1.0.0
@@ -45,7 +44,7 @@ paths:
       operationId: echoRequest
       responses:
         '200':
-          description: Expected response to a valid request"
+          description: Expected response to a valid request" > echo-mgw/api_definitions/echoBasicOpenAPI.yaml
 # expect -exact "Enter Username:"
 # send -- "admin\r"
 # expect -exact "Enter Password for admin:"

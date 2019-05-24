@@ -71,6 +71,7 @@ if [[ -z $label ]]; then
 fi
 
 docker kill $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}')
+docker rm $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}')
 
 echo "Waiting for microgateway to stop"
 while true; do
@@ -86,7 +87,7 @@ log_files=(/home/ubuntu/micro-gw-${label}/logs/*)
 
 if [ ${#log_files[@]} -gt 1 ]; then
     echo "Log files exists. Moving to /tmp"
-    mv /home/ubuntu/micro-gw-${label}/logs/* /tmp/
+    mv /home/ubuntu/${label}/logs/* /tmp/
 fi
 
 echo "Enabling GC Logs"
@@ -94,14 +95,11 @@ JVM_MEM_OPTS="JVM_MEM_OPTS=-Xms${heap_size} -Xmx${heap_size}"
 JAVA_OPTS="JAVA_OPTS=-XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:${HOME}/logs/gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="${HOME}/heap-dump.hprof""
 
 echo "Starting Microgateway"
-pushd /home/ubuntu/micro-gw-${label}/target/
+pushd /home/ubuntu/${label}/target/
 echo "Starting the docker container:"
 (
     set -x
-    docker run -d -v ${PWD}:/home/exec/ -p 9095:9095 -p 9090:9090 -e project=${label} --name="microgw" --cpus=${cpus} wso2/wso2micro-gw:${micro_gw_version} \
-        --volume ${HOME}/logs/gc.log:/home/ubuntu/micro-gw-${label}/logs/gc.log \
-        --volume ${HOME}/heap-dump.hprof:/home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof \
-        -e "${JVM_MEM_OPTS}" -e "${JAVA_OPTS}" 
+    docker run -d -v ${PWD}:/home/exec/ -p 9095:9095 -p 9090:9090 -e project=${label}.balx --name="microgw" --cpus=${cpus} wso2/wso2micro-gw:${micro_gw_version}
 )
 popd
 echo "Waiting for Microgateway to start"
