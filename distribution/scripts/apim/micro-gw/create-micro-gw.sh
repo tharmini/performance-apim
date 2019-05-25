@@ -45,6 +45,15 @@ paths:
       responses:
         '200':
           description: Expected response to a valid request" > echo-mgw/api_definitions/echoBasicOpenAPI.yaml
+
+rm echo-mgw/policies.yaml
+echo "resourcePolicies:
+applicationPolicies:
+subscriptionPolicies:
+  - Unauthenticated:
+     count: 500
+     unitTime: 1
+     timeUnit: min" > echo-mgw/policies.yaml
 # expect -exact "Enter Username:"
 # send -- "admin\r"
 # expect -exact "Enter Password for admin:"
