@@ -46,7 +46,6 @@ paths:
         '200':
           description: Expected response to a valid request" > echo-mgw/api_definitions/echoBasicOpenAPI.yaml
 
-rm echo-mgw/policies.yaml
 echo "resourcePolicies:
 applicationPolicies:
 subscriptionPolicies:
