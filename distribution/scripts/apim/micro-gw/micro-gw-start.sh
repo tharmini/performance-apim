@@ -97,7 +97,8 @@ if [[ ! -d /home/ubuntu/micro-gw-${label}/logs ]]; then
     mkdir -p /home/ubuntu/micro-gw-${label}
     mkdir -p /home/ubuntu/micro-gw-${label}/logs
 fi
-chmod -R 777 ${HOME}/logs
+chmod -R 777 /home/ubuntu/micro-gw-${label}/logs
+chmod -R 777 /home/ubuntu/micro-gw-${label}/runtime
 echo -n >/home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof
 echo -n >/home/ubuntu/micro-gw-${label}/logs/gc.log
 chmod o+w /home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof
