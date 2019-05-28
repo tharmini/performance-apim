@@ -76,6 +76,25 @@ wget https://github.com/wso2/product-microgateway/releases/download/v3.0.0-rc1/w
 unzip wso2am-micro-gw-linux-3.0.0-rc1.zip
 mv wso2am-micro-gw-linux-3.0.0-rc1 runtime-mgw
 
+if [ -e "/runtime-mgw/bin/gateway.pid" ]; then
+    PID=$(cat "/runtime-mgw/bin/gateway.pid")
+fi
+
+if pgrep -f ballerina >/dev/null; then
+    echo "Shutting down microgateway"
+    pgrep -f ballerina | xargs kill -9
+fi
+
+echo "Waiting for microgateway to stop"
+while true; do
+    if ! pgrep -f ballerina >/dev/null; then
+        echo "Microgateway stopped"
+        break
+    else
+        sleep 10
+    fi
+done
+
 echo "Waiting for microgateway to stop"
 while true; do
     if ! pgrep -f ballerina >/dev/null; then
@@ -96,10 +115,10 @@ fi
 echo "Enabling GC Logs"
 JVM_MEM_OPTS="JVM_MEM_OPTS=-Xms${heap_size} -Xmx${heap_size}"
 export JAVA_OPTS="-Xms${heap_size} -Xmx${heap_size} -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:/home/ubuntu/micro-gw-${label}/logs/gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof""
-if [[ ! -d /home/ubuntu/micro-gw-${label}/logs ]]; then
-    mkdir -p /home/ubuntu/micro-gw-${label}
-    mkdir -p /home/ubuntu/micro-gw-${label}/logs
-    mkdir -p /home/ubuntu/micro-gw-${label}/runtime
+if [[ ! -d /home/ubuntu/micro-gw-${label} ]]; then
+    mkdir /home/ubuntu/micro-gw-${label}
+    mkdir /home/ubuntu/micro-gw-${label}/logs
+    mkdir /home/ubuntu/micro-gw-${label}/runtime
 fi
 
 echo "Starting Microgateway"
@@ -116,7 +135,8 @@ echo "Starting Microgateway"
 echo "Waiting for Microgateway to start"
 pushd runtime-mgw/bin
 (
-    bash gateway /home/ubuntu/${label}/target/${label}.balx
+    chmod a+x gateway
+    bash gateway /home/ubuntu/${label}/target/${label}.balx >/dev/null &
 )
 popd
 
