@@ -105,20 +105,18 @@ while true; do
     fi
 done
 
-log_files=(/home/ubuntu/micro-gw-${label}/logs/*)
+log_files=(/home/ubuntu/logs/*)
 
 if [ ${#log_files[@]} -gt 1 ]; then
     echo "Log files exists. Moving to /tmp"
-    mv /home/ubuntu/micro-gw-${label}/logs/* /tmp/
+    mv /home/ubuntu/logs/* /tmp/
 fi
 
 echo "Enabling GC Logs"
 JVM_MEM_OPTS="JVM_MEM_OPTS=-Xms${heap_size} -Xmx${heap_size}"
-export JAVA_OPTS="-Xms${heap_size} -Xmx${heap_size} -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:/home/ubuntu/micro-gw-${label}/logs/gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof""
-if [[ ! -d /home/ubuntu/micro-gw-${label} ]]; then
-    mkdir /home/ubuntu/micro-gw-${label}
-    mkdir /home/ubuntu/micro-gw-${label}/logs
-    mkdir /home/ubuntu/micro-gw-${label}/runtime
+export JAVA_OPTS="-Xms${heap_size} -Xmx${heap_size} -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:/home/ubuntu/logs/gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/home/ubuntu/heap-dump.hprof""
+if [[ ! -d /home/ubuntu/logs ]]; then
+    mkdir /home/ubuntu/logs
 fi
 
 echo "Starting Microgateway"
