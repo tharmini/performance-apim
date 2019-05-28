@@ -70,8 +70,11 @@ if [[ -z $label ]]; then
     exit 1
 fi
 
-docker kill $(docker ps -a | grep vsalaka/micro-gw:$micro_gw_version | awk '{print $1}')
-docker rm $(docker ps -a | grep vsalaka/micro-gw:$micro_gw_version | awk '{print $1}')
+# docker kill $(docker ps -a | grep vsalaka/micro-gw:$micro_gw_version | awk '{print $1}')
+# docker rm $(docker ps -a | grep vsalaka/micro-gw:$micro_gw_version | awk '{print $1}')
+wget https://github.com/wso2/product-microgateway/releases/download/v3.0.0-rc1/wso2am-micro-gw-linux-3.0.0-rc1.zip
+unzip wso2am-micro-gw-linux-3.0.0-rc1.zip
+mv wso2am-micro-gw-linux-3.0.0-rc1 runtime-mgw
 
 echo "Waiting for microgateway to stop"
 while true; do
@@ -92,30 +95,31 @@ fi
 
 echo "Enabling GC Logs"
 JVM_MEM_OPTS="JVM_MEM_OPTS=-Xms${heap_size} -Xmx${heap_size}"
-JAVA_OPTS="-Xms${heap_size} -Xmx${heap_size} -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:/home/ballerina/gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/home/ballerina/heap-dump.hprof""
+export JAVA_OPTS="-Xms${heap_size} -Xmx${heap_size} -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:/home/ubuntu/micro-gw-${label}/logs/gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof""
 if [[ ! -d /home/ubuntu/micro-gw-${label}/logs ]]; then
     mkdir -p /home/ubuntu/micro-gw-${label}
     mkdir -p /home/ubuntu/micro-gw-${label}/logs
+    mkdir -p /home/ubuntu/micro-gw-${label}/runtime
 fi
-chmod -R 777 /home/ubuntu/micro-gw-${label}/logs
-chmod -R 777 /home/ubuntu/micro-gw-${label}/runtime
-echo -n >/home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof
-echo -n >/home/ubuntu/micro-gw-${label}/logs/gc.log
-chmod o+w /home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof
-chmod o+w /home/ubuntu/micro-gw-${label}/logs/gc.log
 
 echo "Starting Microgateway"
-pushd /home/ubuntu/${label}/target/
-echo "Starting the docker container:"
+# pushd /home/ubuntu/${label}/target/
+# echo "Starting the docker container:"
+# (
+#     set -x
+#     docker run -d -v ${PWD}:/home/exec/ -p 9095:9095 -p 9090:9090 -e project=${label} -e JAVA_OPTS="${JAVA_OPTS}" --name="microgw" --cpus=${cpus} \
+#     --volume /home/ubuntu/micro-gw-${label}/logs/gc.log:/home/ballerina/gc.log \
+#     --volume /home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof:/home/ballerina/heap-dump.hprof \
+#     vsalaka/micro-gw:${micro_gw_version}
+# )
+# popd
+echo "Waiting for Microgateway to start"
+pushd runtime-mgw/bin
 (
-    set -x
-    docker run -d -v ${PWD}:/home/exec/ -p 9095:9095 -p 9090:9090 -e project=${label} -e JAVA_OPTS="${JAVA_OPTS}" --name="microgw" --cpus=${cpus} \
-    --volume /home/ubuntu/micro-gw-${label}/logs/gc.log:/home/ballerina/gc.log \
-    --volume /home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof:/home/ballerina/heap-dump.hprof \
-    vsalaka/micro-gw:${micro_gw_version}
+    bash gateway /home/ubuntu/${label}/target/${label}.balx
 )
 popd
-echo "Waiting for Microgateway to start"
+
 
 n=0
 until [ $n -ge 60 ]; do
