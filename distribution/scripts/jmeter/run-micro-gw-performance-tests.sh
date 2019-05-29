@@ -81,8 +81,8 @@ function before_execute_test_scenario() {
 function after_execute_test_scenario() {
     write_server_metrics microgateway $apim_ssh_host ballerina.*/runtime/bre
     # download_file $apim_ssh_host micro-gw-echo-mgw/logs/microgateway.log microgateway.log
-    download_file $apim_ssh_host home/ubuntu/logs/gc.log microgateway_gc.log
-    download_file $apim_ssh_host home/ubuntu/heap-dump.hprof microgateway_heap_dump.hprof
+    download_file $apim_ssh_host logs/gc.log microgateway_gc.log
+    download_file $apim_ssh_host heap-dump.hprof microgateway_heap_dump.hprof
 }
 
 test_scenarios
