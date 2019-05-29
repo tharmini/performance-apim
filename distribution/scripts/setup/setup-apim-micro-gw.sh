@@ -138,6 +138,9 @@ function setup() {
     install_dir=/home/$os_user
     $script_dir/../java/install-java.sh -f $oracle_jdk_dist -u $os_user
 
+    #install docker
+    $script_dir/../docker/install-docker.sh -u $os_user
+
     pushd ${install_dir}
 
     #Remove API Manager if it is already there
@@ -177,16 +180,17 @@ function setup() {
     #Export the PATH of Micro-GW
     export PATH=$PATH:$PWD/micro-gw/bin
 
-    # setup Micro-GW project
+    #initialize Micro-GW project
+    micro-gw init echo-mgw
+
+    #import Micro-GW project
     ./apim/micro-gw/create-micro-gw.sh
 
     #build Micro-GW
     micro-gw build echo-mgw
 
-    sudo -u $os_user unzip -q echo-mgw/target/micro-gw-echo-mgw.zip
-
     #start Micro-GW
-    sudo -u $os_user ./apim/micro-gw/micro-gw-start.sh -m 512m -n echo-mgw
+    sudo -u $os_user ./apim/micro-gw/micro-gw-start.sh -m 512m -n echo-mgw -c 1
 
     #Generate jwt-tokens
     sudo -u $os_user ./apim/micro-gw/generate-jwt-tokens.sh -t 1000
