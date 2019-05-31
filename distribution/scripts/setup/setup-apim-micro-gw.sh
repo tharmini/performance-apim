@@ -181,7 +181,7 @@ function setup() {
     export PATH=$PATH:$PWD/micro-gw/bin
 
     #initialize Micro-GW project
-    micro-gw init echo-mgw
+    micro-gw init echo-mgw -f
 
     #import Micro-GW project
     ./apim/micro-gw/create-micro-gw.sh
