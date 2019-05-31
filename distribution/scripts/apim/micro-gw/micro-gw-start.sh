@@ -37,7 +37,7 @@ function usage() {
     echo ""
 }
 
-while getopts "m:n:h:c" opt; do
+while getopts "m:n:c:h" opt; do
     case "${opt}" in
     m)
         heap_size=${OPTARG}
@@ -107,7 +107,7 @@ done
 export JAVA_HOME="${jvm_dir}"
 
 echo "Starting Microgateway"
-pushd /home/ubuntu/micro-gw-${label}/target/
+pushd /home/ubuntu/${label}/target/
 (
     set -x
     docker run -d -v ${PWD}:/home/exec/ -p 9095:9095 -p 9090:9090 -e project=micro-gw-${label} --name="microgw" --cpus=${cpus} \
