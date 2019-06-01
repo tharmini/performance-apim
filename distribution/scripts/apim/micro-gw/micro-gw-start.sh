@@ -24,7 +24,7 @@ default_heap_size="512m"
 heap_size="$default_heap_size"
 #todo: set as parameter
 micro_gw_version="3.0.0"
-default_cpus="2"
+default_cpus="1"
 cpus="$default_cpus"
 
 function usage() {
@@ -113,6 +113,7 @@ pushd /home/ubuntu/${label}/target/
     docker run -d -v ${PWD}:/home/exec/ -p 9095:9095 -p 9090:9090 -e project=micro-gw-${label} --name="microgw" --cpus=${cpus} \
     --volume /home/ubuntu/micro-gw-${label}/logs/gc.log:/home/ballerina/gc.log \
     --volume /home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof:/home/ballerina/heap-dump.hprof \
+    --network="host" \
     wso2/wso2micro-gw:${micro_gw_version}
 )
 popd
