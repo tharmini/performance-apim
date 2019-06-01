@@ -190,7 +190,7 @@ function setup() {
     micro-gw build echo-mgw
 
     #start Micro-GW
-    sudo -u $os_user ./apim/micro-gw/micro-gw-start.sh -m 512m -n echo-mgw -c 1
+    sudo -u $os_user ./apim/micro-gw/micro-gw-start.sh -m 4G -n echo-mgw
 
     #Generate jwt-tokens
     sudo -u $os_user ./apim/micro-gw/generate-jwt-tokens.sh -t 1000

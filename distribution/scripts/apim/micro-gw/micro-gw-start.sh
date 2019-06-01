@@ -24,7 +24,7 @@ default_heap_size="512m"
 heap_size="$default_heap_size"
 #todo: set as parameter
 micro_gw_version="3.0.0"
-default_cpus="4"
+default_cpus="2"
 cpus="$default_cpus"
 
 function usage() {
