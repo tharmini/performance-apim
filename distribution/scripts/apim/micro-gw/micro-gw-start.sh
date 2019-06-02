@@ -113,10 +113,15 @@ pushd /home/ubuntu/${label}/target/
     docker run -d -v ${PWD}:/home/exec/ -p 9095:9095 -p 9090:9090 -e project=micro-gw-${label} --name="microgw" --cpus=${cpus} \
     --volume /home/ubuntu/micro-gw-${label}/logs/gc.log:/home/ballerina/gc.log \
     --volume /home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof:/home/ballerina/heap-dump.hprof \
-    --network="host" \
     wso2/wso2micro-gw:${micro_gw_version}
 )
 popd
+
+#overwrite the micro-gw.conf
+./create-micro-gw-conf.sh -i ifconfig | grep "inet " | grep -v "127.0.0.1" | grep -v "172." |awk '{print $2}'
+docker cp /home/ubuntu/${label}/micro-gw.conf $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}'):/home/ballerina/conf/
+docker stop $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}')
+docker start $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}')
 
 echo "Waiting for Microgateway to start"
 
