@@ -118,8 +118,8 @@ pushd /home/ubuntu/${label}/target/
 popd
 
 #overwrite the micro-gw.conf
-chmod a+x /home/ubuntu/${label}/create-micro-gw-conf.sh
-./home/ubuntu/${label}/create-micro-gw-conf.sh -i $(ifconfig | grep "inet " | grep -v "127.0.0.1" | grep -v "172." |awk '{print $2}')
+chmod a+x /home/ubuntu/apim/micro-gw/create-micro-gw-conf.sh
+sh /home/ubuntu/apim/micro-gw/create-micro-gw-conf.sh -i $(ifconfig | grep "inet " | grep -v "127.0.0.1" | grep -v "172." |awk '{print $2}')
 docker cp /home/ubuntu/${label}/micro-gw.conf $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}'):/home/ballerina/conf/
 docker stop $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}')
 docker start $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}')
