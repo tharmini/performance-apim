@@ -24,11 +24,6 @@ while getopts "i:" opt; do
     esac
 done
 
-if [[ -z $host_ip ]]; then
-    echo "Please provide the host ip for create-micro-gw.sh"
-    exit 1
-fi
-
 echo "[listenerConfig]
 host=\"0.0.0.0\"
 httpPort=9090
