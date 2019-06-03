@@ -114,4 +114,4 @@ throttleEndpointbase64Header=\"admin:admin\"
     password=\"root\"
 
 [httpClients]
-  verifyHostname=true" > /home/ubuntu/micro-gw.conf
+  verifyHostname=false" > /home/ubuntu/micro-gw.conf
