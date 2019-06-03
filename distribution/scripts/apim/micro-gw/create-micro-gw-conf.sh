@@ -39,7 +39,7 @@ authorizationHeader=\"Authorization\"
 removeAuthHeaderFromOutMessage=true
 
 [keyManager]
-serverUrl=\"${host_ip}\"
+serverUrl=\"https://${host_ip}:9443\"
 username=\"admin\"
 password=\"admin\"
 tokenContext=\"oauth2\"
@@ -47,7 +47,7 @@ timestampSkew=5000
 
 
 [jwtTokenConfig]
-issuer=\"${host_ip}/oauth2/token\"
+issuer=\"https://${host_ip}:9443/oauth2/token\"
 audience=\"http://org.wso2.apimgt/gateway\"
 certificateAlias=\"wso2apim\"
 
@@ -64,7 +64,7 @@ tokenCache.evictionFactor=0.25
 [analytics]
 enable=false
 uploadingTimeSpanInMillis=600000
-uploadingEndpoint=\"${host_ip}/analytics/v1.0/usage/upload-file\"
+uploadingEndpoint=\"https://${host_ip}:9444/analytics/v1.0/usage/upload-file\"
 rotatingPeriod=600000
 task.uploadFiles=true
 username=\"admin\"
@@ -95,7 +95,7 @@ jmsConnectioninitialContextFactory=\"bmbInitialContextFactory\"
 jmsConnectionProviderUrl=\"amqp://admin:admin@carbon/carbon?brokerlist='tcp://localhost:5672'\"
 jmsConnectionUsername=\"\"
 jmsConnectionPassword=\"\"
-throttleEndpointUrl=\"${host_ip}/endpoints\"
+throttleEndpointUrl=\"https://${host_ip}:9443/endpoints\"
 throttleEndpointbase64Header=\"admin:admin\"
 
 [tokenRevocationConfig]
