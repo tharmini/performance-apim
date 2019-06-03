@@ -28,8 +28,6 @@ if [[ -z $host_ip ]]; then
     echo "Please provide the host ip for create-micro-gw.sh"
     exit 1
 fi
-touch /home/ubuntu/echo-mgw/target/micro-gw.conf
-chmod a+rw /home/ubuntu/echo-mgw/target/micro-gw.conf
 
 echo "[listenerConfig]
 host=\"0.0.0.0\"
@@ -121,4 +119,4 @@ throttleEndpointbase64Header=\"admin:admin\"
     password=\"root\"
 
 [httpClients]
-  verifyHostname=true" > /home/ubuntu/echo-mgw/target/micro-gw.conf
+  verifyHostname=true" > /home/ubuntu/micro-gw.conf

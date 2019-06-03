@@ -189,6 +189,10 @@ function setup() {
     #build Micro-GW
     micro-gw build echo-mgw
 
+    #create empty file to avoid permission issues
+    touch /home/ubuntu/micro-gw.conf
+    chmod a+rw /home/ubuntu/micro-gw.conf
+
     #start Micro-GW
     sudo -u $os_user ./apim/micro-gw/micro-gw-start.sh -m 512m -n echo-mgw
 
