@@ -47,7 +47,7 @@ timestampSkew=5000
 
 
 [jwtTokenConfig]
-issuer=\"https://${host_ip}:9443/oauth2/token\"
+issuer=\"https://localhost:9443/oauth2/token\"
 audience=\"http://org.wso2.apimgt/gateway\"
 certificateAlias=\"wso2apim\"
 

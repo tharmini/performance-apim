@@ -115,8 +115,6 @@ pushd /home/ubuntu/${label}/target/
 (
     set -x
     docker run -d -v ${PWD}:/home/exec/ -v /home/ubuntu/micro-gw.conf:/home/ballerina/conf/micro-gw.conf -p 9095:9095 -p 9090:9090 -e project=${label} --name="microgw" --cpus=${cpus} \
-    --volume /home/ubuntu/micro-gw-${label}/logs/gc.log:/home/ballerina/gc.log \
-    --volume /home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof:/home/ballerina/heap-dump.hprof \
     wso2/wso2micro-gw:${micro_gw_version}
 )
 popd
