@@ -106,21 +106,21 @@ for dir in /usr/lib/jvm/jdk1.8*; do
 done
 export JAVA_HOME="${jvm_dir}"
 
+#overwrite the micro-gw.conf
+echo $(ifconfig | grep "inet " | grep -v "127.0.0.1" | grep -v "172." |awk '{print $2}')
+sh /home/ubuntu/apim/micro-gw/create-micro-gw-conf.sh -i $(ifconfig | grep "inet " | grep -v "127.0.0.1" | grep -v "172." |awk '{print $2}')
+
 echo "Starting Microgateway"
 pushd /home/ubuntu/${label}/target/
 (
     set -x
-    docker run -d -v ${PWD}:/home/exec/ -p 9095:9095 -p 9090:9090 -e project=${label} --name="microgw" --cpus=${cpus} \
+    docker run -d -v ${PWD}:/home/exec/ -v /home/ubuntu/micro-gw.conf:/home/ballerina/conf/micro-gw.conf -p 9095:9095 -p 9090:9090 -e project=${label} --name="microgw" --cpus=${cpus} \
     --volume /home/ubuntu/micro-gw-${label}/logs/gc.log:/home/ballerina/gc.log \
     --volume /home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof:/home/ballerina/heap-dump.hprof \
     wso2/wso2micro-gw:${micro_gw_version}
 )
 popd
 
-#overwrite the micro-gw.conf
-echo $(ifconfig | grep "inet " | grep -v "127.0.0.1" | grep -v "172." |awk '{print $2}')
-sh /home/ubuntu/apim/micro-gw/create-micro-gw-conf.sh -i $(ifconfig | grep "inet " | grep -v "127.0.0.1" | grep -v "172." |awk '{print $2}')
-docker cp /home/ubuntu/micro-gw.conf $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}'):/home/ballerina/conf/
 docker stop $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}')
 docker start $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}')
 

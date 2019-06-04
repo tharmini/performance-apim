@@ -162,7 +162,7 @@ function setup() {
     sudo -u $os_user $script_dir/../apim/apim-start.sh -m 1G
 
     # Create APIs in Local API Manager
-    sudo -u $os_user $script_dir/../apim/create-api.sh -a localhost -n "echo" -d "Echo API" -b "http://${netty_host}:8688/"
+    sudo -u $os_user $script_dir/../apim/create-api.sh -a $(ifconfig | grep "inet " | grep -v "127.0.0.1" | grep -v "172." |awk '{print $2}') -n "echo" -d "Echo API" -b "http://${netty_host}:8688/"
 
     #Extract the Micro-gw zip
     echo "Extracting WSO2 API Manager Micro Gateway"
