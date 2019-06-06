@@ -205,8 +205,9 @@ function setup() {
         sudo -u $os_user $script_dir/../apim/generate-tokens.sh -t 4000
     fi
 
-    if [[ -f $tokens_sql ]]; then
-        mysql -h $mysql_host -u $mysql_user -p$mysql_password apim <$tokens_sql
+    gen_tokens_sql="$script_dir/../apim/target/tokens.sql"
+    if [[ -f $gen_tokens_sql ]]; then
+        mysql -h $mysql_host -u $mysql_user -p$mysql_password apim < $gen_tokens_sql
     else
         echo "SQL file with generated tokens not found."
         exit 1
