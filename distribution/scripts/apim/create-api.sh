@@ -210,7 +210,7 @@ api_create_request() {
    "version":"1.0.0",
    "provider":"admin",
    "thumbnailUri":null,
-   "apiDefinition":"{\"swagger\":\"2.0\",\"paths\":{\"/*\":{\"post\":{\"responses\":{\"200\":{\"description\":\"\"}},\"parameters\":[{\"name\":\"Payload\",\"description\":\"Request Body\",\"required\":false,\"in\":\"body\",\"schema\":{\"type\":\"object\",\"properties\":{\"payload\":{\"type\":\"string\"}}}}],\"x-auth-type\":\"Application & Application User\",\"x-throttling-tier\":\"Unlimited\"}}},\"info\":{\"title\":\"echo\",\"version\":\"1.0.0.\"}}",
+   "apiDefinition":"{\"swagger\":\"2.0\",\"paths\":{\"/*\":{\"post\":{\"responses\":{\"200\":{\"description\":\"\"}},\"parameters\":[{\"name\":\"Payload\",\"description\":\"Request Body\",\"required\":false,\"in\":\"body\",\"schema\":{\"type\":\"object\",\"properties\":{\"payload\":{\"type\":\"string\"}}}}],\"x-auth-type\":\"Application & Application User\",\"x-throttling-tier\":\"Unlimited\"}}},\"info\":{\"title\":\"echo\",\"version\":\"1.0.0\"}}",
    "wsdlUri":null,
    "responseCaching":"Disabled",
    "cacheTimeout":300,
