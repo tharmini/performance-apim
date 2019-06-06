@@ -194,7 +194,7 @@ function setup() {
     chmod a+rw /home/ubuntu/micro-gw.conf
 
     #start Micro-GW
-    sudo -u $os_user ./apim/micro-gw/micro-gw-start.sh -m 512m -n echo-mgw
+    sudo -u $os_user ./apim/micro-gw/micro-gw-start.sh -m 4096m -n echo-mgw
 
     #Generate jwt-tokens
     sudo -u $os_user ./apim/micro-gw/generate-jwt-tokens.sh -t 1000
