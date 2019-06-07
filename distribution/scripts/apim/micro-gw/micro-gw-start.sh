@@ -90,6 +90,7 @@ fi
 #create empty file to mount into docker
 touch /home/ubuntu/micro-gw-${label}/logs/gc.log
 touch /home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof
+touch /home/ubuntu/micro-gw-${label}/logs/microgateway.log
 chmod -R a+rw /home/ubuntu/micro-gw-${label}
 
 echo "Enabling GC Logs"
@@ -110,7 +111,7 @@ echo "Starting Microgateway"
 pushd /home/ubuntu/${label}/target/
 (
     set -x
-    docker run -d -v ${PWD}:/home/exec/ -v /home/ubuntu/micro-gw.conf:/home/ballerina/conf/micro-gw.conf -p 9095:9095 -p 9090:9090 -e project=${label} 
+    docker run -d -v ${PWD}:/home/exec/ -v /home/ubuntu/micro-gw.conf:/home/ballerina/conf/micro-gw.conf -p 9095:9095 -p 9090:9090 -e project=${label} \
     -e JAVA_OPTS=${JAVA_OPTS} --name="microgw" --cpus=${cpus} \
     -v /home/ubuntu/micro-gw-${label}/logs/gc.log:/home/ballerina/gc.log -v /home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof:/home/ballerina/heap-dump.hprof \
     vsalaka/wso2micro-gw:${micro_gw_version}
