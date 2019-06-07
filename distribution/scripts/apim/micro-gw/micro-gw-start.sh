@@ -70,13 +70,8 @@ if [[ -z $label ]]; then
     exit 1
 fi
 
-#todo: fix
-if [ -e "/home/ubuntu/micro-gw-${label}/bin/gateway.pid" ]; then
-    PID=$(cat "/home/ubuntu/micro-gw-${label}/bin/gateway.pid")
-fi
-
-docker kill $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}')
-docker rm $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}')
+docker kill $(docker ps -a | grep vsalaka/wso2micro-gw:$micro_gw_version | awk '{print $1}')
+docker rm $(docker ps -a | grep vsalaka/wso2micro-gw:$micro_gw_version | awk '{print $1}')
 
 # create a separate location to keep logs
 if [ ! -d "/home/ubuntu/micro-gw-${label}" ]; then
@@ -92,6 +87,7 @@ if [ ${#log_files[@]} -gt 1 ]; then
     mv /home/ubuntu/micro-gw-${label}/logs/* /tmp/
 fi
 
+#create empty file to mount into docker
 touch /home/ubuntu/micro-gw-${label}/logs/gc.log
 touch /home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof
 chmod -R a+rw /home/ubuntu/micro-gw-${label}
@@ -114,8 +110,10 @@ echo "Starting Microgateway"
 pushd /home/ubuntu/${label}/target/
 (
     set -x
-    docker run -d -v ${PWD}:/home/exec/ -v /home/ubuntu/micro-gw.conf:/home/ballerina/conf/micro-gw.conf -p 9095:9095 -p 9090:9090 -e project=${label} --name="microgw" --cpus=${cpus} \
-    wso2/wso2micro-gw:${micro_gw_version}
+    docker run -d -v ${PWD}:/home/exec/ -v /home/ubuntu/micro-gw.conf:/home/ballerina/conf/micro-gw.conf -p 9095:9095 -p 9090:9090 -e project=${label} 
+    -e JAVA_OPTS=${JAVA_OPTS} --name="microgw" --cpus=${cpus} \
+    -v /home/ubuntu/micro-gw-${label}/logs/gc.log:/home/ballerina/gc.log -v /home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof:/home/ballerina/heap-dump.hprof \
+    vsalaka/wso2micro-gw:${micro_gw_version}
 )
 popd
 
