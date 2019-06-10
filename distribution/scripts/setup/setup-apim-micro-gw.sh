@@ -159,7 +159,7 @@ function setup() {
     sudo -u $os_user $script_dir/../apim/configure.sh -m $mysql_host -u $mysql_user -p $mysql_password -c $mysql_connector_file
 
     # Start API Manager
-    sudo -u $os_user $script_dir/../apim/apim-start.sh -m 1G
+    sudo -u $os_user $script_dir/../apim/apim-start.sh -m 2G
 
     # Create APIs in Local API Manager
     sudo -u $os_user $script_dir/../apim/create-api.sh -a localhost -n "echo" -d "Echo API" -b "http://${netty_host}:8688/"
