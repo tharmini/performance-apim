@@ -23,7 +23,7 @@ label="$default_label"
 default_heap_size="512m"
 heap_size="$default_heap_size"
 #todo: set as parameter
-micro_gw_version="3.0.1-rc1"
+micro_gw_version="3.0.1-rc3"
 default_cpus="2"
 cpus="$default_cpus"
 
