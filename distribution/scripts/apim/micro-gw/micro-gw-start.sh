@@ -22,10 +22,6 @@ default_label="echo-mgw"
 label="$default_label"
 default_heap_size="512m"
 heap_size="$default_heap_size"
-#todo: set as parameter
-micro_gw_version="3.0.1-rc3"
-default_cpus="2"
-cpus="$default_cpus"
 
 function usage() {
     echo ""
@@ -37,7 +33,7 @@ function usage() {
     echo ""
 }
 
-while getopts "m:n:c:h" opt; do
+while getopts "m:n:h" opt; do
     case "${opt}" in
     m)
         heap_size=${OPTARG}
@@ -45,9 +41,6 @@ while getopts "m:n:c:h" opt; do
     n)
         label=${OPTARG}
         ;;
-    c) 
-        cpus=${OPTARG}
-        ;; 
     h)
         usage
         exit 0
@@ -70,8 +63,30 @@ if [[ -z $label ]]; then
     exit 1
 fi
 
-docker kill $(docker ps -a | grep vsalaka/wso2micro-gw:$micro_gw_version | awk '{print $1}')
-docker rm $(docker ps -a | grep vsalaka/wso2micro-gw:$micro_gw_version | awk '{print $1}')
+#fix the download link
+wget https://www.dropbox.com/s/mt93sivbgzbe0ut/wso2am-micro-gw-linux-3.0.2-SNAPSHOT.zip?dl=0
+unzip wso2am-micro-gw-linux-3.0.2-SNAPSHOT.zip
+mv wso2am-micro-gw-linux-3.0.2-SNAPSHOT runtime-mgw
+
+#kill the process
+if [ -e "/runtime-mgw/bin/gateway.pid" ]; then
+    PID=$(cat "/runtime-mgw/bin/gateway.pid")
+fi
+
+if pgrep -f ballerina >/dev/null; then
+    echo "Shutting down microgateway"
+    pgrep -f ballerina | xargs kill -9
+fi
+
+echo "Waiting for microgateway to stop"
+while true; do
+    if ! pgrep -f ballerina >/dev/null; then
+        echo "Microgateway stopped"
+        break
+    else
+        sleep 10
+    fi
+done
 
 # create a separate location to keep logs
 if [ ! -d "/home/ubuntu/micro-gw-${label}" ]; then
@@ -94,8 +109,8 @@ touch /home/ubuntu/micro-gw-${label}/logs/microgateway.log
 chmod -R a+rw /home/ubuntu/micro-gw-${label}
 
 echo "Enabling GC Logs"
-export JAVA_OPTS="-Xms${heap_size} -Xmx${heap_size} -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:/home/ballerina/gc.log"
-JAVA_OPTS+=" -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/home/ballerina/heap-dump.hprof""
+export JAVA_OPTS="-Xms${heap_size} -Xmx${heap_size} -XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:/home/ubuntu/micro-gw-${label}/logs/gc.log"
+JAVA_OPTS+=" -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath="/home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof""
 
 jvm_dir=""
 for dir in /usr/lib/jvm/jdk1.8*; do
@@ -108,18 +123,12 @@ echo $(ifconfig | grep "inet " | grep -v "127.0.0.1" | grep -v "172." |awk '{pri
 sh /home/ubuntu/apim/micro-gw/create-micro-gw-conf.sh -i $(ifconfig | grep "inet " | grep -v "127.0.0.1" | grep -v "172." |awk '{print $2}')
 
 echo "Starting Microgateway"
-pushd /home/ubuntu/${label}/target/
+pushd runtime-mgw/bin
 (
-    set -x
-    docker run -d -v ${PWD}:/home/exec/ -v /home/ubuntu/micro-gw.conf:/home/ballerina/conf/micro-gw.conf -p 9095:9095 -p 9090:9090 -e project=${label} \
-    -e JAVA_OPTS="${JAVA_OPTS}" --name="microgw" --cpus=${cpus} \
-    -v /home/ubuntu/micro-gw-${label}/logs/gc.log:/home/ballerina/gc.log -v /home/ubuntu/micro-gw-${label}/runtime/heap-dump.hprof:/home/ballerina/heap-dump.hprof \
-    vsalaka/wso2micro-gw:${micro_gw_version}
+    chmod a+x gateway
+    bash gateway /home/ubuntu/${label}/target/${label}.jar >/dev/null &
 )
 popd
-
-docker stop $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}')
-docker start $(docker ps -a | grep wso2/wso2micro-gw:$micro_gw_version | awk '{print $1}')
 
 echo "Waiting for Microgateway to start"
 
