@@ -193,8 +193,9 @@ function setup() {
     touch /home/ubuntu/micro-gw.conf
     chmod a+rw /home/ubuntu/micro-gw.conf
 
+    #todo: fix the heap size to change dynamically
     #start Micro-GW
-    sudo -u $os_user ./apim/micro-gw/micro-gw-start.sh -m 4096m -n echo-mgw
+    sudo -u $os_user ./apim/micro-gw/micro-gw-start.sh -m 2048m -n echo-mgw
 
     #Generate jwt-tokens
     sudo -u $os_user ./apim/micro-gw/generate-jwt-tokens.sh -t 1000

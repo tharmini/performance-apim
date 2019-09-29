@@ -68,7 +68,6 @@ wget https://www.dropbox.com/s/mt93sivbgzbe0ut/wso2am-micro-gw-linux-3.0.2-SNAPS
 unzip wso2am-micro-gw-linux-3.0.2-SNAPSHOT.zip
 mv wso2am-micro-gw-linux-3.0.2-SNAPSHOT runtime-mgw
 
-#kill the process
 if [ -e "/runtime-mgw/bin/gateway.pid" ]; then
     PID=$(cat "/runtime-mgw/bin/gateway.pid")
 fi
@@ -119,6 +118,7 @@ done
 export JAVA_HOME="${jvm_dir}"
 
 #overwrite the micro-gw.conf
+echo "Overwriting micro-gw.conf"
 echo $(ifconfig | grep "inet " | grep -v "127.0.0.1" | grep -v "172." |awk '{print $2}')
 sh /home/ubuntu/apim/micro-gw/create-micro-gw-conf.sh -i $(ifconfig | grep "inet " | grep -v "127.0.0.1" | grep -v "172." |awk '{print $2}')
 
