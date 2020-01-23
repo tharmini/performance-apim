@@ -198,12 +198,12 @@ function setup() {
     sudo -u $os_user ./apim/micro-gw/micro-gw-start.sh -m 2048m -n echo-mgw
 
     #Generate jwt-tokens
-    sudo -u $os_user ./apim/micro-gw/generate-jwt-tokens.sh -t 1000
+    sudo -u $os_user ./apim/micro-gw/generate-jwt-tokens.sh -t 1
 
     # Generate oauth2 access tokens
     tokens_sql="$script_dir/../apim/target/tokens.sql"
     if [[ ! -f $tokens_sql ]]; then
-        sudo -u $os_user $script_dir/../apim/generate-tokens.sh -t 4000
+        sudo -u $os_user $script_dir/../apim/generate-tokens.sh -t 1
     fi
 
     gen_tokens_sql="$script_dir/../apim/target/tokens.sql"
